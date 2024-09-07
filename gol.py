@@ -55,16 +55,46 @@ def isEdgeCell(grid, cell):
 
 
 #Function to count the number of neighbors
-#def countNeighbors(grid, cell):
-    #cellIndex = grid.grid.index(cell)
-    #count = 0
+def countNeighbors(grid, cell):
+    if isEdgeCell(grid, cell):
+        return 0
+    
+    cellIndex = grid.grid.index(cell)
+    neighborCount = 0
     
     #Check right neighbor
-    #if grid[cellIndex + 1].state == 1 :
-       # count += 1
-
+    if grid.grid[cellIndex + 1].state == 1 :
+        neighborCount += 1
     
-    #return count
+    #Check left neighbor
+    if grid.grid[cellIndex - 1].state == 1:
+        neighborCount += 1
+
+    #Check top neighbor
+    if grid.grid[cellIndex - grid.gridWidth].state == 1:
+        neighborCount += 1
+    
+    #Check bottom neighbor
+    if grid.grid[cellIndex + grid.gridWidth].state == 1:
+        neighborCount += 1
+    
+    #Check top right neighbor
+    if grid.grid[cellIndex - grid.gridWidth + 1].state == 1:
+        neighborCount += 1
+
+    #Check top left neighbor
+    if grid.grid[cellIndex - grid.gridWidth - 1].state == 1:
+        neighborCount += 1
+    
+    #Check bottom right neighbor
+    if grid.grid[cellIndex + grid.gridWidth + 1].state == 1:
+        neighborCount += 1
+    
+    #Check bottom left neighbor
+    if grid.grid[cellIndex + grid.gridWidth - 1].state == 1:
+        neighborCount += 1
+    
+    return neighborCount
 
 
 
@@ -84,20 +114,24 @@ def isEdgeCell(grid, cell):
 def main():
     global running, screen
     
+    #Initialize pygame
     pygame.init()
     screen = pygame.display.set_mode((width, height))
     pygame.display.set_caption("Game of Life")
     screen.fill(BLACK)
 
+    #Create grid
     realgrid = Grid(40, 40)
 
 
-    realgrid.grid[5].state = 1
+    realgrid.grid[46].state = 1
+    realgrid.grid[6].state = 1
+    realgrid.grid[7].state = 1
     #print(realgrid.grid[4].state)
 
     drawGrid(realgrid)
 
-    print(isEdgeCell(realgrid, realgrid.grid[1590]))
+    print(countNeighbors(realgrid, realgrid.grid[47]))
 
     pygame.display.update()
 
