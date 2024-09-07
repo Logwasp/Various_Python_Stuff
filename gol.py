@@ -42,13 +42,29 @@ def drawGrid(Grid):
 
 
 
+#Function to check if cell is a edge cell
+def isEdgeCell(grid, cell):
+    cellIndex = grid.grid.index(cell)
+    if (cellIndex % grid.gridWidth == 0) or (cellIndex % grid.gridWidth == grid.gridWidth - 1):
+        return True
+    elif (cellIndex < grid.gridWidth) or (cellIndex > grid.gridWidth * grid.gridHeight - grid.gridWidth):
+        return True
+    else:
+        return False
+
+
+
 #Function to count the number of neighbors
-def countNeighbors(grid, cell):
-    count = 0
-    if cell.state == 1:
-        count += 1
+#def countNeighbors(grid, cell):
+    #cellIndex = grid.grid.index(cell)
+    #count = 0
     
-    return count
+    #Check right neighbor
+    #if grid[cellIndex + 1].state == 1 :
+       # count += 1
+
+    
+    #return count
 
 
 
@@ -76,12 +92,12 @@ def main():
     realgrid = Grid(40, 40)
 
 
-    realgrid.grid[44].state = 1
+    realgrid.grid[5].state = 1
     #print(realgrid.grid[4].state)
 
     drawGrid(realgrid)
 
-    print(countNeighbors(realgrid, realgrid.grid[44]))
+    print(isEdgeCell(realgrid, realgrid.grid[1590]))
 
     pygame.display.update()
 
@@ -94,6 +110,8 @@ def main():
         for event in ev:
 
             if event.type == pygame.MOUSEBUTTONUP:
+                x, y = pygame.mouse.get_pos()
+                print(f'Mouse clicked at {x}, {y}')
                 pygame.display.update()
 
             if event.type == pygame.QUIT:
