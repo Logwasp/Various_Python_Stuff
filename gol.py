@@ -9,6 +9,7 @@ BLACK = (  0,   0,  0)
 (width, height) = (800, 800)
 
 running = True
+simulationStarted = False
 
 #Class for each cell
 class Cell:
@@ -108,8 +109,6 @@ def reproduce(grid):
 
     for cell in grid.grid:
         neighbors = countNeighbors(grid, cell)
-        if neighbors != 0:
-            print(neighbors)
 
         # Apply the rules of the Game of Life
         if cell.state == 1:
@@ -133,7 +132,7 @@ def reproduce(grid):
 
 
 def main():
-    global running, screen
+    global running, screen, simulationStarted
     
     #Initialize pygame
     pygame.init()
@@ -150,7 +149,6 @@ def main():
     realgrid.grid[127].state = 1
     realgrid.grid[128].state = 1
     realgrid.grid[167].state = 1
-    #print(realgrid.grid[4].state)
 
     drawGrid(realgrid)
     pygame.display.update()
@@ -165,17 +163,37 @@ def main():
     while running:
         ev = pygame.event.get()
 
-        time.sleep(.4)
-        reproduce(realgrid)
-        drawGrid(realgrid)
-        pygame.display.update()
+
+        if simulationStarted:
+            time.sleep(.4)
+            reproduce(realgrid)
+            drawGrid(realgrid)
+            pygame.display.update()
 
         for event in ev:
 
             if event.type == pygame.MOUSEBUTTONUP:
                 x, y = pygame.mouse.get_pos()
                 print(f'Mouse clicked at {x}, {y}')
+
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    simulationStarted = True
+
+
+
+            if event.type == pygame.MOUSEBUTTONDOWN and not simulationStarted:
+                #Make is such that when I click on a cell, it changes state
+                x, y = pygame.mouse.get_pos()
+                print(f'Mouse clicked at {x}, {y}')
+                cellsize = width / realgrid.gridWidth
+                x = int(x // cellsize)
+                y = int(y // cellsize)
+                print(f'Cell clicked at {x}, {y}')
+                realgrid.grid[y*realgrid.gridWidth + x].state = 1
+                drawGrid(realgrid)
                 pygame.display.update()
+
 
             if event.type == pygame.QUIT:
                 running = False
