@@ -1,4 +1,5 @@
 import pygame
+import time
 
 WHITE =     (255, 255, 255)
 BLUE =      (  0,   0, 255)
@@ -39,15 +40,17 @@ def drawGrid(Grid):
         for j in range(Grid.gridWidth):
             if Grid.grid[i*Grid.gridWidth + j].state == 1:
                 pygame.draw.rect(screen, WHITE, [j*cellsize, i*cellsize, cellsize, cellsize])
+            else:
+                pygame.draw.rect(screen, BLACK, [j*cellsize, i*cellsize, cellsize, cellsize])
 
 
 
 #Function to check if cell is a edge cell
-def isEdgeCell(grid, cell):
-    cellIndex = grid.grid.index(cell)
-    if (cellIndex % grid.gridWidth == 0) or (cellIndex % grid.gridWidth == grid.gridWidth - 1):
+def isEdgeCell(inputgrid, cell):
+    cellIndex = inputgrid.grid.index(cell)
+    if (cellIndex % inputgrid.gridWidth == 0) or (cellIndex % inputgrid.gridWidth == inputgrid.gridWidth - 1):
         return True
-    elif (cellIndex < grid.gridWidth) or (cellIndex > grid.gridWidth * grid.gridHeight - grid.gridWidth):
+    elif (cellIndex < inputgrid.gridWidth) or (cellIndex > inputgrid.gridWidth * inputgrid.gridHeight - inputgrid.gridWidth):
         return True
     else:
         return False
@@ -61,7 +64,7 @@ def countNeighbors(grid, cell):
     
     cellIndex = grid.grid.index(cell)
     neighborCount = 0
-    
+
     #Check right neighbor
     if grid.grid[cellIndex + 1].state == 1 :
         neighborCount += 1
@@ -99,10 +102,28 @@ def countNeighbors(grid, cell):
 
 
 #Function to reproduce
-#def reproduce(grid, cells):
-    #for cell in cells:
-       # if cell.state == 1:
-            #if 
+
+def reproduce(grid):
+    newGrid = [cell.state for cell in grid.grid]  # Create a copy of the current grid states
+
+    for cell in grid.grid:
+        neighbors = countNeighbors(grid, cell)
+        if neighbors != 0:
+            print(neighbors)
+
+        # Apply the rules of the Game of Life
+        if cell.state == 1:
+            if neighbors < 2 or neighbors > 3:
+                newGrid[grid.grid.index(cell)] = 0  # Cell dies
+            else:
+                newGrid[grid.grid.index(cell)] = 1  # Cell stays alive
+        else:
+            if neighbors == 3:
+                newGrid[grid.grid.index(cell)] = 1  # Cell becomes alive
+
+    # Update the grid with the new states
+    for i, cell in enumerate(grid.grid):
+        cell.state = newGrid[i]
     
 
         
@@ -124,22 +145,30 @@ def main():
     realgrid = Grid(40, 40)
 
 
-    realgrid.grid[46].state = 1
-    realgrid.grid[6].state = 1
-    realgrid.grid[7].state = 1
+    realgrid.grid[86].state = 1
+    realgrid.grid[88].state = 1
+    realgrid.grid[127].state = 1
+    realgrid.grid[128].state = 1
+    realgrid.grid[167].state = 1
     #print(realgrid.grid[4].state)
 
     drawGrid(realgrid)
+    pygame.display.update()
 
     print(countNeighbors(realgrid, realgrid.grid[47]))
 
-    pygame.display.update()
+    
 
     
 
     
     while running:
         ev = pygame.event.get()
+
+        time.sleep(.4)
+        reproduce(realgrid)
+        drawGrid(realgrid)
+        pygame.display.update()
 
         for event in ev:
 
